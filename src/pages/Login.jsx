@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import api from "../services/api";
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,8 +20,8 @@ function Login() {
         "token",
         response.data.token
       );
-
       alert("Login Successful");
+       navigate("/dashboard");
     } catch (error) {
       console.log(error);
 

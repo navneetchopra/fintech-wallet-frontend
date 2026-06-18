@@ -1,11 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState({});
   const [receiverId, setReceiverId] = useState("");
   const [amount, setAmount] = useState("");
   const [transactions, setTransactions] = useState([]);
+  const [addAmount, setAddAmount] = useState("");
 
   const fetchData = async () => {
     try {
@@ -31,6 +34,36 @@ function Dashboard() {
     }
   };
 
+  const handleAddMoney = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await api.post(
+        "/add-money",
+        {
+          amount: Number(addAmount),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      console.log(response.data);
+
+      alert("Money Added Successfully");
+
+      fetchData();
+
+      setAddAmount("");
+    } catch (error) {
+      console.log(error);
+
+      alert("Failed To Add Money");
+    }
+  };
+
   const handleSendMoney = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -45,7 +78,7 @@ function Dashboard() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       console.log(response.data);
@@ -62,7 +95,11 @@ function Dashboard() {
       alert("Money Transfer Failed");
     }
   };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
 
+    navigate("/login");
+  };
   useEffect(() => {
     fetchData();
   }, []);
@@ -70,7 +107,7 @@ function Dashboard() {
   return (
     <div>
       <h2>Dashboard</h2>
-
+      <button onClick={handleLogout}>Logout</button>
       <h3>Name: {profile.name}</h3>
 
       <h3>Email: {profile.email}</h3>
@@ -78,7 +115,22 @@ function Dashboard() {
       <h3>Balance: {profile.balance}</h3>
 
       <br />
+      <h2>Add Money</h2>
 
+      <input
+        type="number"
+        placeholder="Enter Amount"
+        value={addAmount}
+        onChange={(e) => setAddAmount(e.target.value)}
+      />
+
+      <br />
+      <br />
+
+      <button onClick={handleAddMoney}>Add Money</button>
+
+      <br />
+      <br />
       <input
         type="number"
         placeholder="Receiver ID"
@@ -99,9 +151,7 @@ function Dashboard() {
       <br />
       <br />
 
-      <button onClick={handleSendMoney}>
-        Send Money
-      </button>
+      <button onClick={handleSendMoney}>Send Money</button>
 
       <br />
       <br />
@@ -114,8 +164,7 @@ function Dashboard() {
         transactions.map((transaction, index) => (
           <div key={index}>
             <p>
-              {transaction.sender_name} →{" "}
-              {transaction.receiver_name} : ₹
+              {transaction.sender_name} → {transaction.receiver_name} : ₹
               {transaction.amount}
             </p>
           </div>
