@@ -105,71 +105,109 @@ function Dashboard() {
   }, []);
 
   return (
-    <div>
-      <h2>Dashboard</h2>
-      <button onClick={handleLogout}>Logout</button>
-      <h3>Name: {profile.name}</h3>
+    <div className="container py-4">
+      {/* Header */}
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="fw-bold">Fintech Wallet Dashboard</h2>
 
-      <h3>Email: {profile.email}</h3>
+        <button className="btn btn-danger" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
 
-      <h3>Balance: {profile.balance}</h3>
+      {/* Profile Card */}
+      <div className="card shadow p-3 mb-4">
+        <h4>User Details</h4>
 
-      <br />
-      <h2>Add Money</h2>
+        <p>
+          <strong>Name:</strong> {profile.name}
+        </p>
 
-      <input
-        type="number"
-        placeholder="Enter Amount"
-        value={addAmount}
-        onChange={(e) => setAddAmount(e.target.value)}
-      />
+        <p>
+          <strong>Email:</strong> {profile.email}
+        </p>
 
-      <br />
-      <br />
+        <h5>Current Balance</h5>
 
-      <button onClick={handleAddMoney}>Add Money</button>
+        <h1 className="text-success fw-bold">₹{profile.balance}</h1>
+      </div>
 
-      <br />
-      <br />
-      <input
-        type="number"
-        placeholder="Receiver ID"
-        value={receiverId}
-        onChange={(e) => setReceiverId(e.target.value)}
-      />
+      <div className="row">
+        {/* Add Money */}
+        <div className="col-md-6 mb-4">
+          <div className="card shadow p-3 h-100">
+            <h4>Add Money</h4>
 
-      <br />
-      <br />
+            <input
+              type="number"
+              className="form-control mb-3"
+              placeholder="Enter Amount"
+              value={addAmount}
+              onChange={(e) => setAddAmount(e.target.value)}
+            />
 
-      <input
-        type="number"
-        placeholder="Amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
-
-      <br />
-      <br />
-
-      <button onClick={handleSendMoney}>Send Money</button>
-
-      <br />
-      <br />
-
-      <h2>Transaction History</h2>
-
-      {transactions.length === 0 ? (
-        <p>No Transactions Found</p>
-      ) : (
-        transactions.map((transaction, index) => (
-          <div key={index}>
-            <p>
-              {transaction.sender_name} → {transaction.receiver_name} : ₹
-              {transaction.amount}
-            </p>
+            <button className="btn btn-success" onClick={handleAddMoney}>
+              Add Money
+            </button>
           </div>
-        ))
-      )}
+        </div>
+
+        {/* Send Money */}
+        <div className="col-md-6 mb-4">
+          <div className="card shadow p-3 h-100">
+            <h4>Send Money</h4>
+
+            <input
+              type="number"
+              className="form-control mb-3"
+              placeholder="Receiver ID"
+              value={receiverId}
+              onChange={(e) => setReceiverId(e.target.value)}
+            />
+
+            <input
+              type="number"
+              className="form-control mb-3"
+              placeholder="Amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+
+            <button className="btn btn-primary" onClick={handleSendMoney}>
+              Send Money
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Transactions */}
+      <div className="card shadow p-3">
+        <h4 className="mb-3">Transaction History</h4>
+
+        {transactions.length === 0 ? (
+          <p>No Transactions Found</p>
+        ) : (
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {transactions.map((transaction, index) => (
+                <tr key={index}>
+                  <td>{transaction.sender_name}</td>
+                  <td>{transaction.receiver_name}</td>
+                  <td>₹{transaction.amount}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 }
